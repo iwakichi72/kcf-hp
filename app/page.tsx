@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MobileNavigation } from "./MobileNavigation";
 
 const challenges = [
   [
@@ -114,36 +115,7 @@ export default function Home() {
             お問い合わせ
           </a>
 
-          <details className="mobile-navigation">
-            <summary className="mobile-navigation-summary">
-              <span className="mobile-navigation-label">MENU</span>
-              <span className="menu-icon" aria-hidden="true">
-                <span />
-                <span />
-              </span>
-            </summary>
-            <nav className="mobile-navigation-panel" aria-label="モバイルナビゲーション">
-              <ul className="mobile-navigation-list">
-                <li>
-                  <a href="#services">事業内容</a>
-                </li>
-                <li>
-                  <a href="#strength">KCFの強み</a>
-                </li>
-                <li>
-                  <a href="#themes">ご相談テーマ例</a>
-                </li>
-                <li>
-                  <a href="#company">会社情報</a>
-                </li>
-                <li>
-                  <a className="mobile-contact-link" href="#contact">
-                    お問い合わせ
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </details>
+          <MobileNavigation />
         </div>
       </header>
 
@@ -233,7 +205,6 @@ export default function Home() {
                 <article className="service-card" key={number}>
                   <div className="service-card-header">
                     <span className="card-number">{number}</span>
-                    <span className="service-card-mark" aria-hidden="true">↗</span>
                   </div>
                   <h3>{title}</h3>
                   <p>{description}</p>
@@ -249,12 +220,12 @@ export default function Home() {
               <p className="section-kicker">OUR STRENGTH</p>
               <h2 id="strength-title">
                 提案だけで終わらない。
-                <span>成果につながるまで、伴走する。</span>
+                <span>現場に定着するまで、伴走する。</span>
               </h2>
               <p>
                 KCFは、計画を提示して完了するのではなく、導入・運用・社内定着までを
                 ひとつのプロセスとして支援します。経営の意図を現場の実行へつなぎ、
-                改善が続く状態をともにつくります。
+                改善が続く状態を目指して支援します。
               </p>
             </div>
 
@@ -294,7 +265,6 @@ export default function Home() {
                 <article className="theme-card" key={theme}>
                   <span className="theme-number">0{index + 1}</span>
                   <h3>{theme}</h3>
-                  <span className="theme-arrow" aria-hidden="true">→</span>
                 </article>
               ))}
             </div>
@@ -330,7 +300,7 @@ export default function Home() {
               <p className="section-kicker section-kicker-dark">COMPANY</p>
               <h2 id="company-title">会社情報</h2>
               <div className="representative-message">
-                <p className="message-label">MESSAGE</p>
+                <p className="message-label">OUR APPROACH</p>
                 <p className="message-text">
                   ITは、導入すること自体がゴールではありません。
                   経営課題に向き合い、現場で使われ、改善が続いて初めて事業の力になります。
