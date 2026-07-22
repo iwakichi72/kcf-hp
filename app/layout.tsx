@@ -1,23 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Starter Project",
-  description: "A clean starting point for building your site.",
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+  title: {
+    default: "株式会社KCF｜構想から定着まで伴走するITコンサルティング",
+    template: "%s｜株式会社KCF",
+  },
+  description:
+    "株式会社KCFは、中小企業のIT戦略からシステム導入、運用・定着まで一貫して伴走するITコンサルティング会社です。",
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    siteName: "株式会社KCF",
+    title: "株式会社KCF｜構想で終わらせない。ITを、事業の力へ。",
+    description:
+      "IT戦略の策定からシステム導入、運用・定着まで一貫して伴走します。",
+  },
+  twitter: {
+    card: "summary",
+    title: "株式会社KCF｜構想で終わらせない。ITを、事業の力へ。",
+    description:
+      "IT戦略の策定からシステム導入、運用・定着まで一貫して伴走します。",
   },
 };
 
@@ -27,12 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="ja">
+      <body>{children}</body>
     </html>
   );
 }

@@ -457,7 +457,7 @@ git commit -m "chore: remove starter preview"
 
 **Step 2: 生成画像を検査する**
 
-`view_image`で、文字の誤り・欠落・架空要素がないことを確認する。使用不能な場合に限り一度だけ再生成する。
+`view_image`で、文字の誤り・欠落・架空要素がないことを確認する。使用不能な場合に限り一度だけ再生成する。再生成後も文字や内容が不正確な場合は、誤ったカードを掲載せず、OG画像参照を省略してテキストメタデータだけを公開する。
 
 **Step 3: `public/og.png`へ保存し、メタデータへ追加する**
 
@@ -501,7 +501,7 @@ git commit -m "feat: add KCF social preview"
 Run:
 
 ```bash
-rg -n "080-3150-7576|掲載準備中|導入実績|codex-preview|Starter Project|Your site" app public tests package.json
+rg -n "080-3150-7576|掲載準備中|導入実績|codex-preview|Starter Project|Your site" app public package.json
 ```
 
 Expected: 一致なし。電話番号、実在すると誤認される仮実績、スターター文言がない。
