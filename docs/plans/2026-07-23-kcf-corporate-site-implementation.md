@@ -18,7 +18,7 @@
 - 採用情報、問い合わせフォーム、電話番号、CMS、アクセス解析は含めない
 - 匿名実績の事実情報が未提供の間は、実績ではなく「ご相談テーマ例」と表記する
 - 正式ロゴ受領までは文字ロゴ「KCF」を使用する
-- スターターの仮プレビュー削除、依存パッケージ整理、ビルド出力の再生成は、ユーザーの削除許可を得てから行う
+- スターターの仮プレビュー削除、依存パッケージ整理、ビルド出力の再生成、公開用一時ファイルの整理は、初回ビルド前にユーザーの削除許可を得てから行う
 - React実装前に`@vercel-react-best-practices`を読み、設計判断へ反映する
 
 ### Task 1: Sitesスターターを初期化し、開発プレビューを起動する
@@ -32,7 +32,18 @@
 - Create: `app/globals.css`
 - Create: starter support files copied by the initializer
 
-**Step 1: 既存の設計書を初期化対象から一時退避する**
+**Step 1: 削除・再生成を伴う対象についてユーザーの許可を得る**
+
+実装方式を選ぶ際に、次の範囲を明示して許可を得る。
+
+- スターター仮プレビュー用の`app/_sites-preview`ディレクトリ（2ファイル）
+- 未使用になる`react-loading-skeleton`依存関係と、その`node_modules`内生成物
+- ビルドのたびに再生成される`dist`、`.next`、`.wrangler`等の生成物
+- 公開パッケージ作成時に生成・整理される`/tmp`内の一時ステージとアーカイブ
+
+許可が得られるまで初期化後のビルド、削除、パッケージ作成へ進まない。
+
+**Step 2: 既存の設計書を初期化対象から一時退避する**
 
 Run:
 
@@ -43,7 +54,7 @@ mv docs work/site-init-hold/docs
 
 Expected: `$PWD`直下には`.git`と`work`だけが残る。ファイル削除は行わない。
 
-**Step 2: Sitesの公式初期化スクリプトを一度だけ実行する**
+**Step 3: Sitesの公式初期化スクリプトを一度だけ実行する**
 
 Run:
 
@@ -53,7 +64,7 @@ Run:
 
 Expected: vinextスターターが作成され、`npm ci`が成功する。
 
-**Step 3: 設計書を元の位置へ戻す**
+**Step 4: 設計書を元の位置へ戻す**
 
 Run:
 
@@ -63,7 +74,7 @@ mv work/site-init-hold/docs docs
 
 Expected: `docs/plans/`に設計書と本計画書が存在する。
 
-**Step 4: 開発サーバーを保持セッションで起動する**
+**Step 5: 開発サーバーを保持セッションで起動する**
 
 Run:
 
@@ -73,13 +84,13 @@ npm run dev
 
 Expected: vinextが正確なLocal URLを表示する。サーバーは以後の実装中も保持する。
 
-**Step 5: Local URLをアプリ内プレビューで一度だけ開く**
+**Step 6: Local URLをアプリ内プレビューで一度だけ開く**
 
-Run: `open_in_codex`でStep 4のLocal URLを開く。
+Run: `open_in_codex`でStep 5のLocal URLを開く。
 
 Expected: スターターの読み込み画面が表示される。追加のクリック、スクリーンショット、DOM検査は行わない。
 
-**Step 6: スターターをコミットする**
+**Step 7: スターターをコミットする**
 
 ```bash
 git add .
@@ -389,15 +400,15 @@ git commit -m "feat: style the KCF corporate site"
 - Modify: `package.json`
 - Modify: `package-lock.json`
 
-**Step 1: ユーザーの削除許可を確認する**
+**Step 1: Task 1で得た削除許可の範囲を確認する**
 
-対象を明示して許可を得る。
+次の対象がTask 1の許可に含まれていることを確認する。
 
 - スターター仮プレビュー用の`app/_sites-preview`ディレクトリ（2ファイル）
 - 未使用になる`react-loading-skeleton`依存関係
 - 再生成される`dist`等のビルド出力
 
-許可が得られるまで削除操作を行わない。
+許可が未取得、撤回済み、または対象範囲が変わった場合は、削除操作を行わず再確認する。
 
 **Step 2: 仮プレビューと依存関係を削除する**
 
