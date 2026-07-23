@@ -140,24 +140,26 @@ address {
   width: fit-content;
 }
 
-.wordmark {
-  color: var(--white);
-  font-size: 1.85rem;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.075em;
+.brand-logo-surface {
+  display: grid;
+  flex: 0 0 auto;
+  width: 68px;
+  height: 58px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
-.wordmark::after {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-left: 10px;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 18px rgba(97, 214, 255, 0.9);
-  content: "";
-  vertical-align: 0.15em;
+.brand-logo-image {
+  display: block;
+  width: 82px;
+  max-width: none;
+  height: 82px;
+  object-fit: contain;
+  transform: translateY(-4px);
 }
 
 .brand-name {
@@ -1458,8 +1460,15 @@ address {
     display: none;
   }
 
-  .wordmark {
-    font-size: 1.65rem;
+  .brand-logo-surface {
+    width: 62px;
+    height: 54px;
+  }
+
+  .brand-logo-image {
+    width: 76px;
+    height: 76px;
+    transform: translateY(-3px);
   }
 
   .mobile-navigation {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BrandIdentity } from "../BrandIdentity";
 
 export const metadata: Metadata = {
   title: "プライバシーポリシー",
@@ -21,8 +22,7 @@ export default function PrivacyPolicy() {
       <header className="site-header privacy-site-header">
         <div className="header-inner">
           <Link className="brand-link" href="/" aria-label="株式会社KCF トップページへ">
-            <span className="wordmark">KCF</span>
-            <span className="brand-name">株式会社KCF</span>
+            <BrandIdentity />
           </Link>
           <Link className="page-back-link" href="/">
             トップページへ戻る

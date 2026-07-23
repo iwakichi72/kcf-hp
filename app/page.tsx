@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandIdentity } from "./BrandIdentity";
 import { MobileNavigation } from "./MobileNavigation";
 
 const challenges = [
@@ -82,8 +83,7 @@ export default function Home() {
       <header className="site-header">
         <div className="header-inner">
           <a className="brand-link" href="#top" aria-label="株式会社KCF トップへ">
-            <span className="wordmark">KCF</span>
-            <span className="brand-name">株式会社KCF</span>
+            <BrandIdentity />
           </a>
 
           <nav className="desktop-navigation" aria-label="メインナビゲーション">
@@ -365,8 +365,7 @@ export default function Home() {
         <div className="section-shell footer-main">
           <div className="footer-brand">
             <a className="brand-link" href="#top" aria-label="株式会社KCF トップへ">
-              <span className="wordmark">KCF</span>
-              <span className="brand-name">株式会社KCF</span>
+              <BrandIdentity />
             </a>
             <p>構想から導入・運用・定着まで伴走するITコンサルティング会社</p>
           </div>

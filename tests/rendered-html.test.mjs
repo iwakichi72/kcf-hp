@@ -82,6 +82,7 @@ test("renders the KCF corporate homepage", async () => {
   assert.match(html, /ご相談テーマ例/);
   assert.match(html, /会社情報/);
   assert.match(html, /株式会社KCF/);
+  assert.match(html, /src=["'][^"']*\/kcf-logo\.png[^"']*["']/i);
   assert.match(html, /代表取締役/);
   assert.match(html, /熊澤\s*徹男/);
   assert.match(html, /〒115-0045/);
@@ -124,6 +125,8 @@ test("ships KCF metadata through an extensible metadata object", async () => {
   assert.match(layout, /description\s*:/);
   assert.match(layout, /openGraph\s*:/);
   assert.match(layout, /locale\s*:\s*["']ja_JP["']/);
+  assert.match(layout, /icon\s*:\s*["']\/kcf-logo\.png["']/);
+  await access(new URL("public/kcf-logo.png", root));
 });
 
 test("contains no disposable starter preview or skeleton dependency", async () => {
