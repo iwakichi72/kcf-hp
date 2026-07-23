@@ -153,9 +153,31 @@ test("includes responsive and reduced-motion safeguards", async () => {
 
   assert.match(css, /--navy:\s*#071426/i);
   assert.match(css, /:focus-visible/);
+  assert.match(css, /@media\s*\(\s*max-width:\s*1080px\s*\)/i);
   assert.match(css, /@media\s*\(\s*max-width:\s*768px\s*\)/i);
   assert.match(
     css,
     /@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/i,
   );
+});
+
+test("uses the transparent KCF logo in an executive white header", async () => {
+  const [response, css, logo] = await Promise.all([
+    render("/"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+    readFile(new URL("public/kcf-logo.png", root)),
+  ]);
+  const html = await response.text();
+  const headerRule = css.match(/\.site-header\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+  const logoSurfaceRule =
+    css.match(/\.brand-logo-surface\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+
+  assert.equal(logo[25], 6);
+  assert.match(
+    headerRule,
+    /background:\s*rgba?\(\s*255\s*,\s*255\s*,\s*255/i,
+  );
+  assert.match(logoSurfaceRule, /background:\s*transparent/i);
+  assert.ok(!/box-shadow:/i.test(logoSurfaceRule));
+  assert.match(html, /class=["'][^"']*hero-logo-image/);
 });
