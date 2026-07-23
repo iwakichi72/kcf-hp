@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandIdentity } from "./BrandIdentity";
+import { BrandIdentity, BrandLogoImage } from "./BrandIdentity";
 import { MobileNavigation } from "./MobileNavigation";
 
 const challenges = [
@@ -125,8 +125,12 @@ export default function Home() {
             <div className="hero-copy">
               <p className="section-kicker">IT CONSULTING / TOKYO</p>
               <h1 className="hero-title" id="hero-title">
-                構想で終わらせない。
-                <span>ITを、事業の力へ。</span>
+                <span className="hero-title-line hero-title-line-dark">
+                  構想で終わらせない。
+                </span>
+                <span className="hero-title-line hero-title-line-blue">
+                  ITを、事業の力へ。
+                </span>
               </h1>
               <p className="hero-description">
                 株式会社KCFは、IT戦略の策定からシステム導入、運用・定着まで
@@ -149,13 +153,8 @@ export default function Home() {
             </div>
 
             <div className="hero-visual" aria-hidden="true">
-              <div className="connection-mark">
-                <span className="connection-line connection-line-one" />
-                <span className="connection-line connection-line-two" />
-                <span className="connection-line connection-line-three" />
-                <span className="connection-node connection-node-one" />
-                <span className="connection-node connection-node-two" />
-                <span className="connection-node connection-node-three" />
+              <div className="hero-logo-stage">
+                <BrandLogoImage className="hero-logo-image" />
               </div>
               <p className="hero-visual-caption">STRATEGY TO ADOPTION</p>
             </div>
