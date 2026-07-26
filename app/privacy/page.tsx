@@ -25,8 +25,8 @@ export default function PrivacyPolicy() {
             <BrandIdentity />
           </Link>
           <Link className="page-back-link" href="/">
+            <span aria-hidden="true">←</span>
             トップページへ戻る
-            <span aria-hidden="true">↗</span>
           </Link>
         </div>
       </header>

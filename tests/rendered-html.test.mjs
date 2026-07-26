@@ -125,8 +125,24 @@ test("ships KCF metadata through an extensible metadata object", async () => {
   assert.match(layout, /description\s*:/);
   assert.match(layout, /openGraph\s*:/);
   assert.match(layout, /locale\s*:\s*["']ja_JP["']/);
-  assert.match(layout, /icon\s*:\s*["']\/kcf-logo\.png["']/);
   await access(new URL("public/kcf-logo.png", root));
+
+  // Favicons are small derivatives of the KCF mark, never the 290KB master.
+  const iconPath = layout.match(/icon\s*:\s*["'](\/kcf-[\w-]+\.png)["']/)?.[1];
+  const applePath = layout.match(/apple\s*:\s*["'](\/kcf-[\w-]+\.png)["']/)?.[1];
+  assert.ok(iconPath, "metadata.icons.icon must reference a local KCF png");
+  assert.ok(applePath, "metadata.icons.apple must reference a local KCF png");
+
+  for (const iconHref of [iconPath, applePath]) {
+    const iconUrl = new URL(`public${iconHref}`, root);
+    await access(iconUrl);
+    const bytes = await readFile(iconUrl);
+    assert.equal(bytes[25], 6, `${iconHref} must keep its RGBA alpha channel`);
+    assert.ok(
+      bytes.byteLength < 64 * 1024,
+      `${iconHref} must stay under 64KB (was ${bytes.byteLength})`,
+    );
+  }
 });
 
 test("contains no disposable starter preview or skeleton dependency", async () => {
@@ -180,4 +196,51 @@ test("uses the transparent KCF logo in an executive white header", async () => {
   assert.match(logoSurfaceRule, /background:\s*transparent/i);
   assert.ok(!/box-shadow:/i.test(logoSurfaceRule));
   assert.match(html, /class=["'][^"']*hero-logo-image/);
+});
+
+test("keeps the stylesheet as a single consolidated layer", async () => {
+  const css = await readFile(new URL("app/globals.css", root), "utf8");
+
+  // The redesign previously shipped as an append-only override block appended
+  // after the old navy design. Every visual defect found in review traced back
+  // to a base rule that block forgot to neutralise, so keep it to one layer.
+  assert.equal(
+    css.match(/^:root\s*\{/gm)?.length,
+    1,
+    "globals.css must declare :root exactly once at the top level",
+  );
+
+  // Markup for these was deleted when the hero network graphic was replaced.
+  assert.ok(!/\.connection-(mark|line|node)/.test(css));
+
+  // Corner brackets that used to frame a card which no longer has a border.
+  assert.ok(!/\.hero-visual::(before|after)\s*\{/.test(css));
+
+  // max-width:290px forced a 1-character orphan onto line 2 of every card.
+  const challengeHeading =
+    css.match(/\.challenge-card h3\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+  assert.ok(!/max-width:/i.test(challengeHeading));
+});
+
+test("meets contrast and target-size requirements", async () => {
+  const [css, html] = await Promise.all([
+    readFile(new URL("app/globals.css", root), "utf8"),
+    render("/").then((response) => response.text()),
+  ]);
+
+  // The pale mark scores 2.16:1 on white; the focus ring must not use it.
+  const focusRule = css.match(/:focus-visible\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+  assert.match(focusRule, /outline:[^;]*var\(--blue-deep\)/);
+
+  // KCF blue is only 3.54:1 on navy, so the navy sections override the kicker.
+  assert.match(css, /\.strength-section \.section-kicker/);
+  assert.match(css, /\.contact-section \.section-kicker/);
+
+  // Small links need a 44px target; the token must exist and be applied.
+  assert.match(css, /--tap:\s*44px/);
+  const footerLink = css.match(/\.footer-bottom a\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+  assert.match(footerLink, /min-height:\s*var\(--tap\)/);
+
+  // A mailto: click can silently do nothing, so the flow must be explained.
+  assert.match(html, /メールソフトが起動します/);
 });

@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description:
     "株式会社KCFは、中小企業のIT戦略からシステム導入、運用・定着まで一貫して伴走するITコンサルティング会社です。",
   icons: {
-    icon: "/kcf-logo.png",
-    apple: "/kcf-logo.png",
+    icon: "/kcf-icon-64.png",
+    apple: "/kcf-icon-180.png",
   },
   openGraph: {
     type: "website",

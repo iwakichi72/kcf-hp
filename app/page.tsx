@@ -154,7 +154,11 @@ export default function Home() {
 
             <div className="hero-visual" aria-hidden="true">
               <div className="hero-logo-stage">
-                <BrandLogoImage className="hero-logo-image" />
+                <BrandLogoImage
+                  className="hero-logo-image"
+                  variant="full"
+                  fetchPriority="high"
+                />
               </div>
               <p className="hero-visual-caption">STRATEGY TO ADOPTION</p>
             </div>
@@ -351,6 +355,10 @@ export default function Home() {
                 <span>メールで相談する</span>
                 <span aria-hidden="true">↗</span>
               </a>
+              <p className="contact-note">
+                ボタンを押すと、ご利用のメールソフトが起動します。
+                起動しない場合は、下記のアドレス宛に直接ご送信ください。
+              </p>
               <p className="contact-email-address">
                 <span>メールアドレス</span>
                 <a href={contactHref}>kumazawa@kcf.co.jp</a>
@@ -364,7 +372,7 @@ export default function Home() {
         <div className="section-shell footer-main">
           <div className="footer-brand">
             <a className="brand-link" href="#top" aria-label="株式会社KCF トップへ">
-              <BrandIdentity />
+              <BrandIdentity loading="lazy" />
             </a>
             <p>構想から導入・運用・定着まで伴走するITコンサルティング会社</p>
           </div>
