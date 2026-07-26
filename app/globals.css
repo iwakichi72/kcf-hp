@@ -5,26 +5,23 @@
    ========================================================================== */
 
 :root {
-  /* Brand — derived from the business card */
+  /* Brand — derived from the business card.
+     --blue on white and --blue-light on navy are the paired accents; using
+     --blue on a navy background scores 3.54:1 and fails contrast. */
   --navy: #071426;
-  --navy-soft: #0d2039;
   --navy-deep: #030c18;
   --blue: #0b6ccb;
   --blue-deep: #0756a5;
   --blue-light: #79c4ef;
-  --cyan: #64b9ed;
 
   /* Text */
   --ink: #0d2138;
   --muted: #4a5c70;
-  --on-navy: rgba(255, 255, 255, 0.92);
   --on-navy-muted: rgba(255, 255, 255, 0.74);
 
   /* Surfaces */
   --white: #ffffff;
   --surface: #f5f8fb;
-  --surface-strong: #eaf1f7;
-  --line: rgba(11, 108, 203, 0.2);
   --line-dark: rgba(13, 33, 56, 0.13);
 
   /* Metrics */
@@ -32,7 +29,6 @@
   --header-height: 88px;
   --radius: 8px;
   --tap: 44px;
-  --shadow: 0 24px 70px rgba(13, 33, 56, 0.08);
 }
 
 *,
@@ -718,7 +714,6 @@ p {
 .card-number,
 .theme-number,
 .process-number,
-.phase-number,
 .policy-number {
   color: var(--blue);
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
@@ -819,11 +814,13 @@ p {
   opacity: 0.55;
 }
 
+/* The right column holds three statements rather than a four-step timeline,
+   so the headline column gets the room it needs to break on phrase boundaries. */
 .strength-layout {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.88fr) minmax(420px, 1.12fr);
+  grid-template-columns: minmax(0, 1fr) minmax(400px, 1.05fr);
   align-items: start;
   gap: clamp(56px, 8vw, 120px);
 }
@@ -854,58 +851,33 @@ p {
   line-height: 1.95;
 }
 
-.support-phase-list {
-  position: relative;
-}
-
-.support-phase-list::before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 27px;
-  width: 1px;
-  background: linear-gradient(var(--blue-light), rgba(121, 196, 239, 0.1));
-  content: "";
-}
-
-.support-phase {
-  position: relative;
+/* Deliberately not a numbered timeline: the chronological view belongs to
+   the 支援の流れ section, and two numbered sequences read as duplication. */
+.strength-list {
   display: grid;
-  grid-template-columns: 56px 1fr;
-  min-height: 148px;
-  padding-bottom: 28px;
-  gap: 28px;
 }
 
-.support-phase:last-child {
-  min-height: auto;
+.strength-item {
+  padding: 32px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.strength-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.strength-item:last-child {
   padding-bottom: 0;
 }
 
-.phase-number {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 56px;
-  height: 56px;
-  border: 1px solid rgba(121, 196, 239, 0.5);
-  border-radius: 50%;
-  background: var(--navy-soft);
-  color: #8ed0f5;
-  place-items: center;
+.strength-item h3 {
+  color: var(--white);
+  font-size: 1.4rem;
+  line-height: 1.55;
 }
 
-.support-phase > div {
-  padding: 5px 0 26px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.11);
-}
-
-.support-phase h3 {
-  font-size: 1.45rem;
-  letter-spacing: 0.06em;
-}
-
-.support-phase p {
+.strength-item p {
   margin-top: 12px;
   color: var(--on-navy-muted);
   font-size: 1rem;
@@ -1625,22 +1597,12 @@ p {
     font-size: clamp(1.85rem, 6.8vw, 2.5rem);
   }
 
-  .support-phase {
-    grid-template-columns: 48px 1fr;
-    gap: 20px;
+  .strength-item {
+    padding: 26px 0;
   }
 
-  .support-phase-list::before {
-    left: 23px;
-  }
-
-  .support-phase h3 {
-    font-size: 1.3rem;
-  }
-
-  .phase-number {
-    width: 48px;
-    height: 48px;
+  .strength-item h3 {
+    font-size: 1.2rem;
   }
 
   .theme-card {

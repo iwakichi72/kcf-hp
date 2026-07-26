@@ -48,11 +48,20 @@ const services = [
   ],
 ] as const;
 
-const supportPhases = [
-  ["構想", "経営課題を整理し、進むべき方向と優先順位を明確にします。"],
-  ["導入", "要件や体制を整え、関係者と連携しながら実行します。"],
-  ["運用", "現場の声を確かめ、使い続けられる仕組みに整えます。"],
-  ["定着", "効果を振り返り、継続的な改善へつなげます。"],
+// 時系列の説明は「支援の流れ」に一本化し、ここでは進め方の姿勢を述べる。
+const strengths = [
+  [
+    "経営と現場、両方の言葉で話す",
+    "経営課題を起点に方針を描きながら、現場で実際に使われる形まで落とし込みます。どちらか一方の理屈だけで進めません。",
+  ],
+  [
+    "決まっていない段階から相談できる",
+    "課題が整理できていない、ツールも決めていない。その状態からお聞きし、状況を言葉にするところから一緒に進めます。",
+  ],
+  [
+    "「導入完了」を区切りにしない",
+    "現場で使われているか、改善が続いているかを確かめながら、定着までを支援の範囲として設計します。",
+  ],
 ] as const;
 
 const themes = [
@@ -232,17 +241,14 @@ export default function Home() {
               </p>
             </div>
 
-            <ol className="support-phase-list">
-              {supportPhases.map(([title, description], index) => (
-                <li className="support-phase" key={title}>
-                  <span className="phase-number">0{index + 1}</span>
-                  <div>
-                    <h3>{title}</h3>
-                    <p>{description}</p>
-                  </div>
+            <ul className="strength-list">
+              {strengths.map(([title, description]) => (
+                <li className="strength-item" key={title}>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
         </section>
 
