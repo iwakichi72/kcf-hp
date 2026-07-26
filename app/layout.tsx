@@ -19,12 +19,15 @@ export const metadata: Metadata = {
     title: "株式会社KCF｜構想で終わらせない。ITを、事業の力へ。",
     description:
       "IT戦略の策定からシステム導入、運用・定着まで一貫して伴走します。",
+    // The 1254px master; the pages themselves only ever load the derivative.
+    images: ["/kcf-logo.png"],
   },
   twitter: {
     card: "summary",
     title: "株式会社KCF｜構想で終わらせない。ITを、事業の力へ。",
     description:
       "IT戦略の策定からシステム導入、運用・定着まで一貫して伴走します。",
+    images: ["/kcf-logo.png"],
   },
 };
 

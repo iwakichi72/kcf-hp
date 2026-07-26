@@ -1,6 +1,10 @@
 import Link from "next/link";
-import { BrandIdentity, BrandLogoImage } from "./BrandIdentity";
-import { MobileNavigation } from "./MobileNavigation";
+import { BackToTop } from "./BackToTop";
+import { BrandIdentity } from "./BrandIdentity";
+import { HeroFigure } from "./HeroFigure";
+import { NAV_ITEMS } from "./navigation";
+import { ServiceIcon, type ServiceIconName } from "./ServiceIcon";
+import { SiteHeader } from "./SiteHeader";
 
 const challenges = [
   [
@@ -20,33 +24,43 @@ const challenges = [
   ],
 ] as const;
 
-const services = [
+const services: readonly (readonly [
+  string,
+  ServiceIconName,
+  string,
+  string,
+])[] = [
   [
     "01",
+    "strategy",
     "IT戦略・DX支援",
     "経営課題を起点に、優先順位と実行計画を整理します。",
   ],
   [
     "02",
+    "system",
     "システム・ITツール導入",
     "要件整理から選定、導入、活用開始まで支援します。",
   ],
   [
     "03",
+    "automation",
     "業務改善・自動化",
     "業務を可視化し、無理なく続く効率化を設計します。",
   ],
   [
     "04",
+    "project",
     "プロジェクト推進",
     "進捗・課題・ベンダー間の調整を担い、実行を前へ進めます。",
   ],
   [
     "05",
+    "security",
     "情報セキュリティ",
     "事業規模とリスクに合った現実的な対策を整えます。",
   ],
-] as const;
+];
 
 // 時系列の説明は「支援の流れ」に一本化し、ここでは進め方の姿勢を述べる。
 const strengths = [
@@ -89,56 +103,23 @@ export default function Home() {
         本文へ移動
       </a>
 
-      <header className="site-header">
-        <div className="header-inner">
-          <a className="brand-link" href="#top" aria-label="株式会社KCF トップへ">
-            <BrandIdentity />
-          </a>
-
-          <nav className="desktop-navigation" aria-label="メインナビゲーション">
-            <ul className="navigation-list">
-              <li>
-                <a className="navigation-link" href="#services">
-                  事業内容
-                </a>
-              </li>
-              <li>
-                <a className="navigation-link" href="#strength">
-                  KCFの強み
-                </a>
-              </li>
-              <li>
-                <a className="navigation-link" href="#themes">
-                  ご相談テーマ例
-                </a>
-              </li>
-              <li>
-                <a className="navigation-link" href="#company">
-                  会社情報
-                </a>
-              </li>
-            </ul>
-          </nav>
-
-          <a className="header-contact-link" href="#contact">
-            お問い合わせ
-          </a>
-
-          <MobileNavigation />
-        </div>
-      </header>
+      <SiteHeader />
 
       <main id="main-content">
         <section className="hero" id="top" aria-labelledby="hero-title">
-          <div className="hero-grid section-shell">
+          <div className="hero-figure" aria-hidden="true">
+            <HeroFigure />
+          </div>
+
+          <div className="section-shell hero-inner">
             <div className="hero-copy">
               <p className="section-kicker">IT CONSULTING / TOKYO</p>
               <h1 className="hero-title" id="hero-title">
                 <span className="hero-title-line hero-title-line-dark">
-                  構想で終わらせない。
+                  <span className="hero-title-text">構想で終わらせない。</span>
                 </span>
                 <span className="hero-title-line hero-title-line-blue">
-                  ITを、事業の力へ。
+                  <span className="hero-title-text">ITを、事業の力へ。</span>
                 </span>
               </h1>
               <p className="hero-description">
@@ -147,29 +128,22 @@ export default function Home() {
               </p>
               <div className="hero-actions">
                 <a className="primary-button" href="#contact">
-                  相談する
-                  <span aria-hidden="true">↗</span>
+                  <span>相談する</span>
+                  <span className="button-arrow" aria-hidden="true">
+                    ↗
+                  </span>
                 </a>
                 <a className="secondary-button" href="#services">
-                  事業内容を見る
-                  <span aria-hidden="true">↓</span>
+                  <span>事業内容を見る</span>
+                  <span className="button-arrow" aria-hidden="true">
+                    ↓
+                  </span>
                 </a>
               </div>
               <p className="hero-note">
                 <span aria-hidden="true" />
                 課題が整理できていない段階でもご相談いただけます。
               </p>
-            </div>
-
-            <div className="hero-visual" aria-hidden="true">
-              <div className="hero-logo-stage">
-                <BrandLogoImage
-                  className="hero-logo-image"
-                  variant="full"
-                  fetchPriority="high"
-                />
-              </div>
-              <p className="hero-visual-caption">STRATEGY TO ADOPTION</p>
             </div>
           </div>
         </section>
@@ -190,6 +164,9 @@ export default function Home() {
             <div className="challenge-grid">
               {challenges.map(([number, title, description]) => (
                 <article className="challenge-card" key={number}>
+                  <span className="challenge-ghost" aria-hidden="true">
+                    {number}
+                  </span>
                   <span className="card-number">{number}</span>
                   <h3>{title}</h3>
                   <p>{description}</p>
@@ -213,13 +190,17 @@ export default function Home() {
             </div>
 
             <div className="service-grid">
-              {services.map(([number, title, description]) => (
+              {services.map(([number, icon, title, description]) => (
                 <article className="service-card" key={number}>
                   <div className="service-card-header">
+                    <span className="service-icon-tile" aria-hidden="true">
+                      <ServiceIcon name={icon} />
+                    </span>
                     <span className="card-number">{number}</span>
                   </div>
                   <h3>{title}</h3>
                   <p>{description}</p>
+                  <span className="service-card-rule" aria-hidden="true" />
                 </article>
               ))}
             </div>
@@ -244,6 +225,7 @@ export default function Home() {
             <ul className="strength-list">
               {strengths.map(([title, description]) => (
                 <li className="strength-item" key={title}>
+                  <span className="strength-marker" aria-hidden="true" />
                   <h3>{title}</h3>
                   <p>{description}</p>
                 </li>
@@ -271,10 +253,20 @@ export default function Home() {
 
             <div className="theme-list">
               {themes.map((theme, index) => (
-                <article className="theme-card" key={theme}>
-                  <span className="theme-number">0{index + 1}</span>
+                <a className="theme-card" href="#contact" key={theme}>
+                  <span className="theme-number" aria-hidden="true">
+                    0{index + 1}
+                  </span>
                   <h3>{theme}</h3>
-                </article>
+                  {/* Not aria-hidden: it is what tells a screen reader where
+                      the theme links to. Only the glyph is decorative. */}
+                  <span className="theme-action">
+                    このテーマで相談する
+                    <span className="button-arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </span>
+                </a>
               ))}
             </div>
           </div>
@@ -359,7 +351,9 @@ export default function Home() {
             <div className="contact-action">
               <a className="contact-email-button" href={contactHref}>
                 <span>メールで相談する</span>
-                <span aria-hidden="true">↗</span>
+                <span className="button-arrow" aria-hidden="true">
+                  ↗
+                </span>
               </a>
               <p className="contact-note">
                 ボタンを押すと、ご利用のメールソフトが起動します。
@@ -383,7 +377,22 @@ export default function Home() {
             <p>構想から導入・運用・定着まで伴走するITコンサルティング会社</p>
           </div>
 
+          <nav className="footer-navigation" aria-label="フッターナビゲーション">
+            <p className="footer-heading">サイトマップ</p>
+            <ul>
+              {NAV_ITEMS.map((item) => (
+                <li key={item.id}>
+                  <a href={`#${item.id}`}>{item.label}</a>
+                </li>
+              ))}
+              <li>
+                <a href="#contact">お問い合わせ</a>
+              </li>
+            </ul>
+          </nav>
+
           <div className="footer-information">
+            <p className="footer-heading">所在地・連絡先</p>
             <p>〒115-0045 東京都北区赤羽1-7-9 赤羽第一葉山ビル4F</p>
             <a href={contactHref}>kumazawa@kcf.co.jp</a>
           </div>
@@ -394,6 +403,8 @@ export default function Home() {
           <Link href="/privacy">プライバシーポリシー</Link>
         </div>
       </footer>
+
+      <BackToTop />
     </>
   );
 }

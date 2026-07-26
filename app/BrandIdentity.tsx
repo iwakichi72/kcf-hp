@@ -1,61 +1,33 @@
 /* eslint-disable @next/next/no-img-element -- This local brand asset does not need runtime image optimization. */
 
 /**
- * The KCF mark ships at two resolutions of the *same* artwork. `full` is the
- * 1254px master used for the large hero mark; `compact` is a 320px derivative
- * (39KB vs 290KB) that is ample for the 104px header and footer lockups.
+ * The KCF mark appears in the header and footer lockups only, both of which
+ * render it at 104px or less. The 320px derivative (39KB) is ample for that;
+ * the 1254px master stays in `public/` and is served as the social preview
+ * image from the layout metadata.
  */
-const LOGO_SOURCES = {
-  full: { src: "/kcf-logo.png", size: 1254 },
-  compact: { src: "/kcf-logo-320.png", size: 320 },
-} as const;
-
-type BrandLogoVariant = keyof typeof LOGO_SOURCES;
+const LOGO = { src: "/kcf-logo-320.png", size: 320 } as const;
 
 type BrandLogoImageProps = {
   className?: string;
-  variant?: BrandLogoVariant;
   loading?: "eager" | "lazy";
-  fetchPriority?: "high" | "low" | "auto";
 };
 
 export function BrandLogoImage({
   className = "",
-  variant = "compact",
   loading = "eager",
-  fetchPriority = "auto",
 }: BrandLogoImageProps) {
-  const { src, size } = LOGO_SOURCES[variant];
-
-  const image = (
+  return (
     <img
       className={className}
-      src={src}
+      src={LOGO.src}
       alt=""
-      width={size}
-      height={size}
+      width={LOGO.size}
+      height={LOGO.size}
       loading={loading}
-      fetchPriority={fetchPriority}
       decoding="async"
     />
   );
-
-  // `.hero-visual` is display:none below 901px, but browsers still fetch images
-  // inside a hidden subtree. Point narrow viewports at the 320px derivative so
-  // phones do not download the 290KB master for a mark they never see.
-  if (variant === "full") {
-    return (
-      <picture>
-        <source
-          media="(max-width: 900px)"
-          srcSet={LOGO_SOURCES.compact.src}
-        />
-        {image}
-      </picture>
-    );
-  }
-
-  return image;
 }
 
 type BrandIdentityProps = {

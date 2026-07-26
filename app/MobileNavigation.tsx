@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type KeyboardEvent, type MouseEvent } from "react";
+import { NAV_ITEMS } from "./navigation";
 
 export function MobileNavigation() {
   const detailsRef = useRef<HTMLDetailsElement>(null);
@@ -42,18 +43,11 @@ export function MobileNavigation() {
         onClick={handleNavigation}
       >
         <ul className="mobile-navigation-list">
-          <li>
-            <a href="#services">事業内容</a>
-          </li>
-          <li>
-            <a href="#strength">KCFの強み</a>
-          </li>
-          <li>
-            <a href="#themes">ご相談テーマ例</a>
-          </li>
-          <li>
-            <a href="#company">会社情報</a>
-          </li>
+          {NAV_ITEMS.map((item) => (
+            <li key={item.id}>
+              <a href={`#${item.id}`}>{item.label}</a>
+            </li>
+          ))}
           <li>
             <a className="mobile-contact-link" href="#contact">
               お問い合わせ
