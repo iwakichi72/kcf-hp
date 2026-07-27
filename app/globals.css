@@ -1201,39 +1201,6 @@ p {
   text-wrap: balance;
 }
 
-.acronym-dots {
-  display: flex;
-  align-items: center;
-  margin-top: clamp(26px, 3vw, 38px);
-}
-
-/* 当たり判定は 44px、見えている点は 7px。 */
-.acronym-dot {
-  display: grid;
-  width: var(--tap);
-  height: var(--tap);
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  place-items: center;
-}
-
-.acronym-dot > span {
-  width: 7px;
-  height: 7px;
-  background: rgba(13, 33, 56, 0.22);
-  transform: rotate(45deg);
-  transition:
-    background 220ms ease,
-    width 260ms var(--ease-out);
-}
-
-.acronym-dot-active > span {
-  width: 20px;
-  background: var(--blue);
-}
-
 .visually-hidden {
   position: absolute;
   overflow: hidden;

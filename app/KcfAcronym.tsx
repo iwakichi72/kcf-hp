@@ -42,7 +42,7 @@ export const READINGS: readonly Reading[] = [
 const LETTERS = ["K", "C", "F"] as const;
 
 /** 和文を読み切れる長さ。短くすると落ち着きがなくなる。 */
-const INTERVAL = 4600;
+const INTERVAL = 5000;
 
 /** リール一本ごとの着地差。0 だと三つ同時に止まって機構に見えない。 */
 const STAGGER = 150;
@@ -65,26 +65,27 @@ function useReducedMotion() {
 }
 
 export function KcfAcronym() {
-  const [index, setIndex] = useState(0);
+  // index ではなく累計の送り数を持つ。READINGS.length 回進めば一巡して
+  // 先頭に戻っており、そこが終着点だと index だけでは区別できない。
+  const [step, setStep] = useState(0);
   const reduced = useReducedMotion();
 
   // ポインタがブロックの上にある / フォーカスが中にある間は進めない。
   // 読んでいる最中に切り替わるのが、この手の表現でいちばん嫌われる。
   const [held, setHeld] = useState(false);
 
-  // 点をひとつ選んだ時点で自動送りは畳む。読み方を指定した人の手から
-  // 主導権を取り返さないため、そして WCAG 2.2.2 の「止める手段」を
-  // 停止ボタンなしで残すため。
-  const [pinned, setPinned] = useState(false);
+  const index = step % READINGS.length;
 
-  const stopped = reduced || held || pinned;
+  // 一巡して先頭（社名の原点）へ戻ったら、そこで止まったまま。
+  // 延々と回り続ける文字盤は、信頼を売る会社のページでは落ち着かない。
+  const finished = step >= READINGS.length;
+
+  const stopped = reduced || held || finished;
 
   useEffect(() => {
     if (stopped) return;
 
-    const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % READINGS.length);
-    }, INTERVAL);
+    const timer = window.setInterval(() => setStep((current) => current + 1), INTERVAL);
 
     return () => window.clearInterval(timer);
   }, [stopped]);
@@ -157,29 +158,8 @@ export function KcfAcronym() {
             ))}
           </ul>
 
-          {/* 停止ボタンは置かない。文字盤の脇に操作文言が並ぶと、
-              機構よりボタンのほうが目に入ってしまう。点そのものを
-              押せるようにして、指標と操作を一つにまとめている。 */}
-          <ul className="acronym-dots">
-            {READINGS.map((entry, dot) => (
-              <li key={entry.ja}>
-                <button
-                  type="button"
-                  className={
-                    dot === index ? "acronym-dot acronym-dot-active" : "acronym-dot"
-                  }
-                  aria-label={`${dot + 1}つ目の読み方を表示`}
-                  aria-current={dot === index}
-                  onClick={() => {
-                    setIndex(dot);
-                    setPinned(true);
-                  }}
-                >
-                  <span aria-hidden="true" />
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* 操作系は一切置かない。止まるまで25秒、あとは動かないので、
+              文字盤の脇に指標もボタンも要らない。 */}
         </div>
       </div>
     </section>
