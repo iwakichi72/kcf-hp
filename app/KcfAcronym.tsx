@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import {
+  type CSSProperties,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 /**
  * 社名 KCF を「ひとつに固定した意味」ではなく、K / C / F の三つのリールが
@@ -61,14 +66,18 @@ function useReducedMotion() {
 
 export function KcfAcronym() {
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
   const reduced = useReducedMotion();
 
   // ポインタがブロックの上にある / フォーカスが中にある間は進めない。
   // 読んでいる最中に切り替わるのが、この手の表現でいちばん嫌われる。
   const [held, setHeld] = useState(false);
 
-  const stopped = paused || reduced || held;
+  // 点をひとつ選んだ時点で自動送りは畳む。読み方を指定した人の手から
+  // 主導権を取り返さないため、そして WCAG 2.2.2 の「止める手段」を
+  // 停止ボタンなしで残すため。
+  const [pinned, setPinned] = useState(false);
+
+  const stopped = reduced || held || pinned;
 
   useEffect(() => {
     if (stopped) return;
@@ -112,12 +121,17 @@ export function KcfAcronym() {
               <div className="acronym-reel" key={letter}>
                 <span className="acronym-letter">{letter}</span>
                 <span className="acronym-window">
+                  {/* translateY の % はトラック自身の高さ（＝語数ぶん）が
+                      基準になるので使えない。窓の高さを --reel-step として
+                      持ち、その整数倍で送る。 */}
                   <span
                     className="acronym-track"
-                    style={{
-                      transform: `translateY(${-index * 100}%)`,
-                      transitionDelay: `${column * STAGGER}ms`,
-                    }}
+                    style={
+                      {
+                        "--reel-index": index,
+                        transitionDelay: `${column * STAGGER}ms`,
+                      } as CSSProperties
+                    }
                   >
                     {READINGS.map((entry, row) => (
                       <span className="acronym-word" key={row}>
@@ -143,33 +157,29 @@ export function KcfAcronym() {
             ))}
           </ul>
 
-          <div className="acronym-controls">
-            <ul className="acronym-dots" aria-hidden="true">
-              {READINGS.map((entry, dot) => (
-                <li key={entry.ja}>
-                  <button
-                    type="button"
-                    className={
-                      dot === index ? "acronym-dot acronym-dot-active" : "acronym-dot"
-                    }
-                    tabIndex={-1}
-                    onClick={() => setIndex(dot)}
-                  >
-                    <span />
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <button
-              type="button"
-              className="acronym-toggle"
-              aria-pressed={paused}
-              onClick={() => setPaused((current) => !current)}
-            >
-              {paused ? "切り替えを再開" : "切り替えを止める"}
-            </button>
-          </div>
+          {/* 停止ボタンは置かない。文字盤の脇に操作文言が並ぶと、
+              機構よりボタンのほうが目に入ってしまう。点そのものを
+              押せるようにして、指標と操作を一つにまとめている。 */}
+          <ul className="acronym-dots">
+            {READINGS.map((entry, dot) => (
+              <li key={entry.ja}>
+                <button
+                  type="button"
+                  className={
+                    dot === index ? "acronym-dot acronym-dot-active" : "acronym-dot"
+                  }
+                  aria-label={`${dot + 1}つ目の読み方を表示`}
+                  aria-current={dot === index}
+                  onClick={() => {
+                    setIndex(dot);
+                    setPinned(true);
+                  }}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

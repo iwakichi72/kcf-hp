@@ -1145,12 +1145,16 @@ p {
 }
 
 /* 窓の高さは語の行送りと同値。上下のぼかしで、回転している途中の
-   語が窓枠に貼りつかず、奥から出てくるように見える。 */
+   語が窓枠に貼りつかず、奥から出てくるように見える。
+   --reel-step は窓・語・送り量の三箇所で使う唯一の寸法。ここがずれると
+   語が窓の中央に来ないので、数値を散らさない。 */
 .acronym-window {
+  --reel-step: 1.9em;
+
   display: block;
   overflow: hidden;
   width: 100%;
-  height: 1.9em;
+  height: var(--reel-step);
   font-size: clamp(0.72rem, 1.15vw, 0.88rem);
   mask-image: linear-gradient(
     180deg,
@@ -1163,6 +1167,7 @@ p {
 
 .acronym-track {
   display: block;
+  transform: translateY(calc(var(--reel-index, 0) * var(--reel-step) * -1));
   transition: transform 720ms var(--ease-out);
 }
 
@@ -1170,7 +1175,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 1.9em;
+  height: var(--reel-step);
   color: var(--blue);
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-weight: 700;
@@ -1196,17 +1201,10 @@ p {
   text-wrap: balance;
 }
 
-.acronym-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: clamp(26px, 3vw, 38px);
-  gap: 16px;
-}
-
 .acronym-dots {
   display: flex;
   align-items: center;
+  margin-top: clamp(26px, 3vw, 38px);
 }
 
 /* 当たり判定は 44px、見えている点は 7px。 */
@@ -1234,25 +1232,6 @@ p {
 .acronym-dot-active > span {
   width: 20px;
   background: var(--blue);
-}
-
-.acronym-toggle {
-  min-height: var(--tap);
-  padding: 0 4px;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  transition: color 180ms ease;
-  white-space: nowrap;
-}
-
-.acronym-toggle:hover {
-  color: var(--blue-deep);
 }
 
 .visually-hidden {
@@ -2125,14 +2104,6 @@ p {
 
   .acronym-japanese {
     text-align: left;
-  }
-
-  /* 点と停止ボタンを一行に収めると、44px の当たり判定を削るしかなくなる。
-     縦に積んで、当たり判定のほうを守る。 */
-  .acronym-controls {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0;
   }
 
   .footer-bottom {
