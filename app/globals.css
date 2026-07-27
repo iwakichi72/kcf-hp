@@ -441,12 +441,15 @@ p {
 
 /* Sits to the right of the copy. The symbol stays whole — only the scattered
    rules that feed into it run off toward the left of the column. */
+/* right を負に振って、右端の菱形が画面の縁で「途中で断たれた」ように
+   見えないところまで送る。0 のままだと、広い画面で断面が菱形の腹に
+   来てしまい、裁ち落としではなく描画ミスに読める。 */
 .hero-figure {
   position: absolute;
   top: calc(50% + 22px);
-  right: 0;
+  right: -3%;
   z-index: 0;
-  width: min(62%, 900px);
+  width: min(58%, 860px);
   transform: translateY(-50%);
 }
 
@@ -681,8 +684,7 @@ p {
   margin-bottom: 48px;
 }
 
-.section-heading h2,
-.company-message > h2 {
+.section-heading h2 {
   margin-top: 16px;
   color: var(--ink);
   font-size: clamp(1.95rem, 3.3vw, 2.9rem);
@@ -1027,6 +1029,8 @@ p {
   line-height: 1.6;
 }
 
+/* ホバーまで隠していると、行がリンクだと分からないまま通り過ぎられる。
+   常時薄く出し、ホバー/フォーカスで前に出す。 */
 .theme-action {
   display: inline-flex;
   align-items: center;
@@ -1034,7 +1038,7 @@ p {
   color: var(--blue-deep);
   font-size: 0.85rem;
   font-weight: 700;
-  opacity: 0;
+  opacity: 0.55;
   transition: opacity 220ms ease;
   white-space: nowrap;
 }
@@ -1098,47 +1102,169 @@ p {
   font-weight: 700;
 }
 
-/* ========================== 会社情報 ========================== */
+/* ====================== KCFという三文字 ====================== */
 
-.company-layout {
+/* 白地のセクションが続く中で、ここだけ罫線で囲った台を置く。囲いが
+   「掲示されているもの」の合図になり、周りのカード群と役割が混ざらない。 */
+.acronym-section {
+  padding-block: clamp(72px, 8vw, 112px);
+  background: var(--white);
+}
+
+.acronym-stage {
+  padding: clamp(36px, 4vw, 56px) clamp(24px, 3.4vw, 52px);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius-card);
+  background: linear-gradient(180deg, var(--surface), var(--white) 62%);
+}
+
+.acronym-reels {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(440px, 1.15fr);
-  gap: clamp(56px, 9vw, 120px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.representative-message {
-  position: relative;
-  margin-top: 44px;
-  padding: 30px 32px;
-  overflow: hidden;
-  border-left: 3px solid var(--blue);
-  background: var(--surface);
+/* 三本のリールを縦罫で仕切る。カードにせず罫線だけで割ると、
+   運賃表や反転フラップ表示の顔になる。 */
+.acronym-reel {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 0 12px;
 }
 
-.representative-message::after {
-  position: absolute;
-  right: -46px;
-  bottom: -46px;
-  width: 132px;
-  height: 132px;
-  border: 1px solid rgba(11, 108, 203, 0.14);
-  content: "";
-  transform: rotate(45deg);
+.acronym-reel + .acronym-reel {
+  border-left: 1px solid var(--line-dark);
 }
 
-.message-label {
-  color: var(--blue);
-  font-size: 0.78rem;
+.acronym-letter {
+  color: var(--ink);
+  font-size: clamp(3.2rem, 6.6vw, 5.4rem);
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
-.message-text {
-  position: relative;
-  margin-top: 16px;
-  color: var(--muted);
-  line-height: 1.95;
+/* 窓の高さは語の行送りと同値。上下のぼかしで、回転している途中の
+   語が窓枠に貼りつかず、奥から出てくるように見える。 */
+.acronym-window {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  height: 1.9em;
+  font-size: clamp(0.72rem, 1.15vw, 0.88rem);
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    black 26%,
+    black 74%,
+    transparent 100%
+  );
 }
+
+.acronym-track {
+  display: block;
+  transition: transform 720ms var(--ease-out);
+}
+
+.acronym-word {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.9em;
+  color: var(--blue);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* 英語のリールが止まってから和文が入る。この「待ち」は animation-delay では
+   なくキーフレームの中に置いてある。delay + backwards fill にすると、
+   アニメーションが走らない環境（背景タブなど）で文が消えたままになる。 */
+.acronym-japanese {
+  margin-top: clamp(30px, 3.6vw, 46px);
+  animation: acronym-settle 1040ms var(--ease-out) forwards;
+  color: var(--ink);
+  font-feature-settings: "palt" 1;
+  font-size: clamp(1.3rem, 2.7vw, 2.05rem);
+  font-weight: 750;
+  letter-spacing: -0.015em;
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.acronym-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: clamp(26px, 3vw, 38px);
+  gap: 16px;
+}
+
+.acronym-dots {
+  display: flex;
+  align-items: center;
+}
+
+/* 当たり判定は 44px、見えている点は 7px。 */
+.acronym-dot {
+  display: grid;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  place-items: center;
+}
+
+.acronym-dot > span {
+  width: 7px;
+  height: 7px;
+  background: rgba(13, 33, 56, 0.22);
+  transform: rotate(45deg);
+  transition:
+    background 220ms ease,
+    width 260ms var(--ease-out);
+}
+
+.acronym-dot-active > span {
+  width: 20px;
+  background: var(--blue);
+}
+
+.acronym-toggle {
+  min-height: var(--tap);
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 180ms ease;
+  white-space: nowrap;
+}
+
+.acronym-toggle:hover {
+  color: var(--blue-deep);
+}
+
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ========================== 会社情報 ========================== */
 
 .company-details {
   border-top: 1px solid var(--line-dark);
@@ -1578,7 +1704,8 @@ p {
 
 /* =========================== Keyframes =========================== */
 
-/* The only two animations on the site, both on first paint of the hero. */
+/* Two fire on first paint of the hero; `acronym-settle` is the only one that
+   repeats, and it is driven by the KCF reel's own timer, not by scrolling. */
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -1598,6 +1725,21 @@ p {
   }
 
   to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 和文はリールと違って滑らせない。少しだけ沈んだ位置から浮いて据わる。
+   40% までの平坦部が、三本目のリールが着地するのを待つ時間にあたる。 */
+@keyframes acronym-settle {
+  0%,
+  40% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
     opacity: 1;
     transform: translateY(0);
   }
@@ -1685,7 +1827,6 @@ p {
 
   .section-heading,
   .strength-layout,
-  .company-layout,
   .contact-layout {
     grid-template-columns: 1fr;
   }
@@ -1696,7 +1837,6 @@ p {
   }
 
   .strength-layout,
-  .company-layout,
   .contact-layout {
     gap: 56px;
   }
@@ -1756,14 +1896,16 @@ p {
     display: block;
   }
 
+  /* 812px の画面で、ロゴだけが最初の 150px を占めていた。マークは十分に
+     読めるまま、第一画面をコピーへ返す。 */
   .brand-logo-surface {
-    width: 76px;
-    height: 70px;
+    width: 58px;
+    height: 52px;
   }
 
   .brand-logo-image {
-    width: 92px;
-    height: 92px;
+    width: 70px;
+    height: 70px;
     transform: translateY(-1px);
   }
 
@@ -1793,7 +1935,8 @@ p {
   .process-section,
   .company-section,
   .strength-section,
-  .contact-section {
+  .contact-section,
+  .acronym-section {
     padding-block: 72px;
   }
 
@@ -1801,8 +1944,7 @@ p {
     margin-bottom: 36px;
   }
 
-  .section-heading h2,
-  .company-message > h2 {
+  .section-heading h2 {
     font-size: clamp(1.8rem, 6.6vw, 2.4rem);
   }
 
@@ -1881,7 +2023,6 @@ p {
     opacity: 1;
   }
 
-  .representative-message,
   .contact-action {
     padding: 26px 22px;
   }
@@ -1947,6 +2088,51 @@ p {
   .contact-email-button {
     min-height: 62px;
     padding-inline: 20px;
+  }
+
+  /* 三本並べると "FOLLOW-THROUGH" が入らない幅。縦罫を横罫に持ち替えて
+     「K ── KUMAZAWA」の三行に組み替える。用語集の顔になるので、
+     機構としての読み味は保てる。 */
+  .acronym-reels {
+    grid-template-columns: 1fr;
+  }
+
+  .acronym-reel {
+    align-items: center;
+    grid-template-columns: 1.2em minmax(0, 1fr);
+    justify-items: start;
+    gap: 20px;
+    padding: 14px 0;
+  }
+
+  .acronym-reel + .acronym-reel {
+    border-top: 1px solid var(--line-dark);
+    border-left: 0;
+  }
+
+  .acronym-letter {
+    font-size: 2.4rem;
+  }
+
+  .acronym-window {
+    font-size: 0.82rem;
+  }
+
+  .acronym-word {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .acronym-japanese {
+    text-align: left;
+  }
+
+  /* 点と停止ボタンを一行に収めると、44px の当たり判定を削るしかなくなる。
+     縦に積んで、当たり判定のほうを守る。 */
+  .acronym-controls {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0;
   }
 
   .footer-bottom {

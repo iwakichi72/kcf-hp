@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BackToTop } from "./BackToTop";
 import { BrandIdentity } from "./BrandIdentity";
 import { HeroFigure } from "./HeroFigure";
+import { KcfAcronym } from "./KcfAcronym";
 import { NAV_ITEMS } from "./navigation";
 import { ServiceIcon, type ServiceIconName } from "./ServiceIcon";
 import { SiteHeader } from "./SiteHeader";
@@ -113,7 +114,9 @@ export default function Home() {
 
           <div className="section-shell hero-inner">
             <div className="hero-copy">
-              <p className="section-kicker">IT CONSULTING / TOKYO</p>
+              {/* 「IT CONSULTING」はテンプレートの既定値で、業種の名乗りにしか
+                  ならない。所在地は事実で、かつこの会社にしか書けない一行。 */}
+              <p className="section-kicker">AKABANE, TOKYO</p>
               <h1 className="hero-title" id="hero-title">
                 <span className="hero-title-line hero-title-line-dark">
                   <span className="hero-title-text">構想で終わらせない。</span>
@@ -148,12 +151,17 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ヒーローの直後。売り込みに入る前に、社名そのものを一度開いて見せる。 */}
+        <KcfAcronym />
+
         <section className="challenges-section" aria-labelledby="challenges-title">
           <div className="section-shell">
             <div className="section-heading">
               <div>
                 <p className="section-kicker section-kicker-dark">BUSINESS CHALLENGES</p>
-                <h2 id="challenges-title">こんなITのお悩みはありませんか？</h2>
+                {/* 経営者が困っているのは「IT」ではなく、決めきれないこと。
+                    見出しは症状の言葉で置き、IT は下の本文で受ける。 */}
+                <h2 id="challenges-title">判断が、止まっていませんか。</h2>
               </div>
               <p className="section-introduction">
                 ITの課題は、経営と現場のあいだで複雑になりがちです。
@@ -213,7 +221,7 @@ export default function Home() {
               <p className="section-kicker">OUR STRENGTH</p>
               <h2 id="strength-title">
                 提案だけで終わらない。
-                <span>現場に定着するまで、伴走する。</span>
+                <span>現場で使われるまでを、仕事の範囲にする。</span>
               </h2>
               <p>
                 KCFは、計画を提示して完了するのではなく、導入・運用・社内定着までを
@@ -296,18 +304,19 @@ export default function Home() {
         </section>
 
         <section className="company-section" id="company" aria-labelledby="company-title">
-          <div className="section-shell company-layout">
-            <div className="company-message">
-              <p className="section-kicker section-kicker-dark">COMPANY</p>
-              <h2 id="company-title">会社情報</h2>
-              <div className="representative-message">
-                <p className="message-label">OUR APPROACH</p>
-                <p className="message-text">
-                  ITは、導入すること自体がゴールではありません。
-                  経営課題に向き合い、現場で使われ、改善が続いて初めて事業の力になります。
-                  KCFは実行可能な一歩をともに考え、その先の定着まで伴走します。
-                </p>
+          <div className="section-shell">
+            {/* OUR APPROACH ブロックは削除した。理念は KCF セクションが、
+                進め方は強みセクションが担っていて、ここでは三度目の再掲に
+                なっていた。左右分割をやめ、他セクションと同じ
+                「見出し → 全幅の中身」に揃える。 */}
+            <div className="section-heading">
+              <div>
+                <p className="section-kicker section-kicker-dark">COMPANY</p>
+                <h2 id="company-title">会社情報</h2>
               </div>
+              <p className="section-introduction">
+                登記および事業上の基本情報です。
+              </p>
             </div>
 
             <dl className="company-details">
@@ -339,7 +348,7 @@ export default function Home() {
             <div className="contact-copy">
               <p className="section-kicker">CONTACT</p>
               <h2 id="contact-title">
-                ITの課題を、
+                決めきれないことを、
                 <span>一緒に整理することから。</span>
               </h2>
               <p>
