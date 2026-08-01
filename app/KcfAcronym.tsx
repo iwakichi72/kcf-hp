@@ -13,7 +13,8 @@ import {
  *
  * スロットに寄せすぎると遊技機になるので、機構は空港の反転フラップ表示に寄せた。
  *   - 三つのリールは同時に止まらない。K → C → F の順に 150ms ずつ遅れて着地する。
- *   - 一巡すると必ず 0 番目（社名の原点）に戻る。名前は動いても、署名は一つ。
+ *   - 一巡すると 0 番目（社名の原点）に戻り、そのまま回り続ける。
+ *     名前は動いても、署名は一つ。
  *   - 動くのは英単語だけ。K/C/F の字面と和文の位置は動かないので、
  *     視線がページ上で跳ねない。
  *
@@ -65,27 +66,26 @@ function useReducedMotion() {
 }
 
 export function KcfAcronym() {
-  // index ではなく累計の送り数を持つ。READINGS.length 回進めば一巡して
-  // 先頭に戻っており、そこが終着点だと index だけでは区別できない。
-  const [step, setStep] = useState(0);
+  const [index, setIndex] = useState(0);
   const reduced = useReducedMotion();
 
   // ポインタがブロックの上にある / フォーカスが中にある間は進めない。
   // 読んでいる最中に切り替わるのが、この手の表現でいちばん嫌われる。
   const [held, setHeld] = useState(false);
 
-  const index = step % READINGS.length;
+  const stopped = reduced || held;
 
-  // 一巡して先頭（社名の原点）へ戻ったら、そこで止まったまま。
-  // 延々と回り続ける文字盤は、信頼を売る会社のページでは落ち着かない。
-  const finished = step >= READINGS.length;
-
-  const stopped = reduced || held || finished;
-
+  // 一巡したら先頭へ戻り、そのまま回り続ける。以前は一巡で停止していたが、
+  // タイマーは読み込み時に走り出すので、このブロックまでスクロールして
+  // 来た頃には 25 秒を使い切って 0 番目で止まっており、来訪者からは
+  // 「動かない文字盤」にしか見えなかった。
   useEffect(() => {
     if (stopped) return;
 
-    const timer = window.setInterval(() => setStep((current) => current + 1), INTERVAL);
+    const timer = window.setInterval(
+      () => setIndex((current) => (current + 1) % READINGS.length),
+      INTERVAL,
+    );
 
     return () => window.clearInterval(timer);
   }, [stopped]);
@@ -158,8 +158,8 @@ export function KcfAcronym() {
             ))}
           </ul>
 
-          {/* 操作系は一切置かない。止まるまで25秒、あとは動かないので、
-              文字盤の脇に指標もボタンも要らない。 */}
+          {/* 操作系は一切置かない。読みたい読み方があればポインタを乗せれば
+              止まるので、文字盤の脇に指標もボタンも要らない。 */}
         </div>
       </div>
     </section>

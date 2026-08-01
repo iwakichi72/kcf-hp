@@ -93,9 +93,30 @@ const steps = [
   "定着・継続改善",
 ] as const;
 
+/* 空のメールを開くと何から書けばよいか迷って手が止まる。宛名と項目だけ
+   入れておけば、埋めるだけで用が足りる。ページで「課題が整理できていない
+   段階でもご相談いただけます」と約束している以上、相談内容の欄が書けないと
+   送れないように見えてはいけないので、そこは注記を添えて最後に置く。 */
+const contactBody = [
+  "株式会社KCF ご担当者さま",
+  "",
+  "ホームページを拝見し、ご相談したくご連絡いたしました。",
+  "",
+  "■ 会社名・団体名：",
+  "■ 氏名：",
+  "■ 電話番号：",
+  "■ 希望する連絡方法・時間帯：",
+  "",
+  "■ 相談したい内容（整理できていない段階のままで構いません）：",
+  "",
+  "",
+].join("\n");
+
 const contactHref =
   "mailto:kumazawa@kcf.co.jp?subject=" +
-  encodeURIComponent("ホームページを見てのご相談");
+  encodeURIComponent("ホームページを見てのご相談") +
+  "&body=" +
+  encodeURIComponent(contactBody);
 
 export default function Home() {
   return (

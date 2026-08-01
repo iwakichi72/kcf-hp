@@ -7,9 +7,28 @@ export const metadata: Metadata = {
   description: "株式会社KCFにおける個人情報の取扱いについてご案内します。",
 };
 
+/* 開示や訂正の請求は書き出しに迷いやすいので、トップと同じく雛形を入れる。
+   請求の種別を先に置くのは、受け取った側が最初に判断する項目だから。 */
+const privacyContactBody = [
+  "株式会社KCF ご担当者さま",
+  "",
+  "プライバシーポリシーを拝見し、個人情報の取扱いについてご連絡いたしました。",
+  "",
+  "■ ご用件（開示・訂正・利用停止・その他）：",
+  "■ 会社名・団体名：",
+  "■ 氏名：",
+  "■ 電話番号：",
+  "",
+  "■ 詳細：",
+  "",
+  "",
+].join("\n");
+
 const privacyContactHref =
   "mailto:kumazawa@kcf.co.jp?subject=" +
-  encodeURIComponent("個人情報の取扱いについて");
+  encodeURIComponent("個人情報の取扱いについて") +
+  "&body=" +
+  encodeURIComponent(privacyContactBody);
 
 // NOTE: This policy is a working draft and must receive final legal and operational review before publication.
 export default function PrivacyPolicy() {

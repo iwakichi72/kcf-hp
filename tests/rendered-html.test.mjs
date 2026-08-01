@@ -299,6 +299,33 @@ test("meets contrast and target-size requirements", async () => {
   assert.match(html, /メールソフトが起動します/);
 });
 
+test("prefills the enquiry mail instead of opening a blank compose window", async () => {
+  const [home, privacy] = await Promise.all([
+    render("/").then((response) => response.text()),
+    render("/privacy").then((response) => response.text()),
+  ]);
+
+  for (const [html, ownMarker] of [
+    [home, "相談したい内容"],
+    [privacy, "開示・訂正・利用停止"],
+  ]) {
+    // React escapes `&` in attributes, so the raw href carries `&amp;`.
+    const href = html
+      .match(/href=["'](mailto:kumazawa@kcf\.co\.jp\?[^"']*)["']/)?.[1]
+      ?.replaceAll("&amp;", "&");
+    assert.ok(href, "the contact link must carry mailto parameters");
+
+    const params = new URL(href).searchParams;
+    assert.ok(params.get("subject"), "the mail must arrive with a subject");
+
+    const body = params.get("body");
+    assert.ok(body, "the mail must arrive with a filled-in template");
+    assert.match(body, /株式会社KCF ご担当者さま/);
+    assert.match(body, /■ 氏名：/);
+    assert.ok(body.includes(ownMarker), `${ownMarker} belongs to this page`);
+  }
+});
+
 test("keeps the workers.dev preview out of search results", async () => {
   const preview = await render("/", "kcf-hp.example.workers.dev");
   await preview.text();
