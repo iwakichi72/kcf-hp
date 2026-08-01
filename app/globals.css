@@ -441,15 +441,19 @@ p {
 
 /* Sits to the right of the copy. The symbol stays whole — only the scattered
    rules that feed into it run off toward the left of the column. */
-/* right を負に振って、右端の菱形が画面の縁で「途中で断たれた」ように
-   見えないところまで送る。0 のままだと、広い画面で断面が菱形の腹に
-   来てしまい、裁ち落としではなく描画ミスに読める。 */
+/* 右端はコンテンツのガターに合わせ、ヘッダーのナビ右端と縦のラインを通す。
+   以前は right:-3% で画面外へ送っていたが、それだと実体の菱形の右端まで
+   30px 前後が切り落とされ、図版だけがガターを無視して縁まで届くため、
+   構図全体が右に寄って見えていた。裁ち落とさないので断面の心配もない。
+
+   幅は、実体（viewBox の右 70%）が見出しに掛からない上限として決めている。
+   左 30% は走査線の破片で、これは本文の余白に薄く掛かってよい。 */
 .hero-figure {
   position: absolute;
   top: calc(50% + 22px);
-  right: -3%;
+  right: max(24px, calc((100% - var(--content)) / 2));
   z-index: 0;
-  width: min(58%, 860px);
+  width: min(50%, 700px);
   transform: translateY(-50%);
 }
 
@@ -1714,10 +1718,6 @@ p {
 
   .hero-copy {
     max-width: 540px;
-  }
-
-  .hero-figure {
-    width: 58%;
   }
 
   .service-grid {
