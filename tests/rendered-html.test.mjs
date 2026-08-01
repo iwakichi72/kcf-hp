@@ -19,7 +19,7 @@ const starterMarkers = [
 
 let renderSequence = 0;
 
-async function render(pathname = "/") {
+async function render(pathname = "/", host = "localhost") {
   renderSequence += 1;
 
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -30,7 +30,7 @@ async function render(pathname = "/") {
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
+    new Request(`http://${host}${pathname}`, {
       headers: { accept: "text/html" },
     }),
     {
@@ -297,4 +297,23 @@ test("meets contrast and target-size requirements", async () => {
 
   // A mailto: click can silently do nothing, so the flow must be explained.
   assert.match(html, /メールソフトが起動します/);
+});
+
+test("keeps the workers.dev preview out of search results", async () => {
+  const preview = await render("/", "kcf-hp.example.workers.dev");
+  await preview.text();
+
+  assert.equal(
+    preview.headers.get("x-robots-tag"),
+    "noindex, nofollow",
+    "the preview hostname must never be indexable",
+  );
+
+  // The guard has to retire itself. Nothing in the deploy would remind anyone
+  // to strip a robots.txt once the custom domain is attached, so the rule is
+  // keyed on the hostname rather than shipped as a file.
+  const production = await render("/", "kcf.co.jp");
+  await production.text();
+
+  assert.equal(production.headers.get("x-robots-tag"), null);
 });
